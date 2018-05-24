@@ -1,0 +1,15 @@
+{
+  "name": "emails-templates",
+  "version": "1.0.0",
+  "description": "emails templates",
+  "main": "index.js",
+  "dependencies": {
+    "inline-css": "^2.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

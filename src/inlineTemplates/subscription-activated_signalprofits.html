@@ -1,0 +1,103 @@
+{% capture welcome_username %}{{subscription.customer.primaryAddress.emails.0.value}}{% endcapture %}
+{% capture welcome_support_email %}support@signalprofits.com{% endcapture %}
+{% assign welcome_manage_link = "https://accounts.signalprofits.com/, Manage Account" | split: ", " %}
+{% assign welcome_members_link = "https://accounts.signalprofits.com/, www.members.signalprofits.com" | split: ", " %}
+
+<!DOCTYPE html>
+<html lang="en" style="display: block; height: 100%;">
+<head>
+    <title>Your subscription was activated</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    
+</head>
+<body style="color: #0D2B3E; display: block; font-family: Roboto, sans-serif; font-size: 14px; height: 100%; margin: 0; padding: 20px;">
+<p>Let me be the first to welcome you to Research Profits, our premium crypto asset investment research publication. We are delighted to have you with us as we explore the most exciting, volatile, cutting-edge, and profitable investments currently available today.</p>
+<p>You can find your receipt at the bottom of this email.</p>
+<p>To access everything that your membership includes, please follow the instructions below.</p>
+<p>1. This is your Username: {{welcome_username}}</p>
+<p>2. If you need to reset your Research Profits password, please click here: <a href="{{welcome_manage_link[0]}}">{{welcome_manage_link[1]}}</a>. Otherwise, you should have immediate access upon logging into <a href="{{welcome_members_link[0]}}">{{welcome_members_link[1]}}</a>. Please remember your username and password are case-sensitive.</p>
+<p>3. If you have any question about your account, please email us at <a href="mailto:{{welcome_support_email }}">{{welcome_support_email}}</a>.</p>
+<p>You now have immediate access to all our exclusive reports and user videos in our Subscription Portal as well as begin to receive our investment recommendations.</p>
+<p>If you have any questions at all, please feel free to contact our friendly customer service team at <a href="mailto:{{welcome_support_email }}">{{welcome_support_email}}</a>.</p>
+<p>It’s a privilege to welcome you to Research Profits.</p>
+<p>Best,</p>
+<p>Mark Moss <br> Editor, Research Profits</p>
+--------------------------------
+<p>Date {{ subscription.createdTime | date: "%m/%d/%Y" }}</p>
+<table class="table" cellspacing="0" style="padding: 16px 0; width: 100%;">
+    <tr class="billing-content">
+        <td colspan="3" class="billing-address" style="vertical-align: top;">
+            <span class="title" style="font-weight: 600;">Billed to:</span> <br>
+            <span>{{subscription.billingAddress.firstName}} {{subscription.billingAddress.lastName}}</span> <br>
+            {% if subscription.billingAddress.organization %}
+            <span>{{subscription.billingAddress.organization}}</span> <br>
+            {% endif %}
+            <span>
+                {{subscription.billingAddress.address}}
+                {% if subscription.billingAddress.address2 %}
+                    ({{subscription.billingAddress.address2}})
+                {% endif %}
+            </span> <br>
+            <span>{{subscription.billingAddress.city}}, {{subscription.billingAddress.region}}  {{subscription.billingAddress.postalCode}}</span> <br>
+            <span>{{subscription.billingAddress.country}}</span>
+        </td>
+        {% if subscription.initialInvoice %}
+        <td colspan="2" class="billing-invoice" style="vertical-align: top;">
+            <span class="title" style="font-weight: 600;">Invoice: #{{subscription.initialInvoice.invoiceNumber}}</span> <br>
+            <span class="title" style="font-weight: 600;">Payment Date: </span><span>{{subscription.initialInvoice.paidTime | date: "%m/%d/%Y" }}</span> <br>
+            <span class="title" style="font-weight: 600;">Payment Method: </span><span>{{subscription.customer.defaultPaymentInstrument.method}}</span> <br>
+        </td>
+        {% endif %}
+    </tr>
+</table>
+<p>You have been subscribed to {{subscription.plan.name}} - {{subscription.plan.description}}.</p>
+<table class="table items" cellspacing="0" style="border-bottom: 1px solid #E1E7EA; padding: 16px 0; width: 100%;">
+    <tr class="header">
+        <td class="quantity" style="border-bottom: 1px solid #E1E7EA; padding: 8px; text-align: center;"><span class="title" style="font-weight: 600;">Qty.</span></td>
+        <td colspan="3" style="border-bottom: 1px solid #E1E7EA; padding: 8px;"><span class="title" style="font-weight: 600;">Service</span></td>
+        <td class="text-right" style="border-bottom: 1px solid #E1E7EA; padding: 8px; text-align: right;"><span class="title" style="font-weight: 600;">Price ({{subscription.plan.currency}})</span></td>
+    </tr>
+    {% if subscription.plan.setupAmount %}
+    <tr class="item" style="background-color: #F6F8F9;">
+        <td class="quantity" style="padding: 8px; text-align: center;"><span>{{subscription.quantity}}</span></td>
+        <td colspan="3" style="padding: 8px;"><span>Setup fee</span></td>
+        <td class="text-right" style="padding: 8px; text-align: right;"><span>{{subscription.plan.currencySign}}{{subscription.plan.setupAmount | money}}</span></td>
+    </tr>
+    {% endif %}
+    {% if subscription.plan.trialPeriodLength %}
+    <tr class="item">
+        <td class="quantity" style="padding: 8px; text-align: center;"><span>{{subscription.quantity}}</span></td>
+        <td colspan="3" style="padding: 8px;"><span>Trial period - {{subscription.plan.trialPeriodLength}} {{subscription.plan.trialPeriodUnit}}</span></td>
+        <td class="text-right" style="padding: 8px; text-align: right;"><span>{{subscription.plan.currencySign}}{{subscription.plan.trialAmount | money}}</span></td>
+    </tr>
+    {% elsif subscription.plan.recurringPeriodLength %}
+    <tr class="item" style="background-color: #F6F8F9;">
+        <td class="quantity" style="padding: 8px; text-align: center;"><span>{{subscription.quantity}}</span></td>
+        <td colspan="3" style="padding: 8px;"><span>Recurring every {{subscription.plan.recurringPeriodLength}} {{subscription.plan.recurringPeriodUnit}}</span></td>
+        <td class="text-right total-line" style="border-bottom: 1px solid #E1E7EA; padding: 8px; text-align: right;"><span>{{subscription.plan.currencySign}}{{subscription.plan.recurringAmount | money}}</span></td>
+    </tr>
+    {% endif %}
+    {% if subscription.initialInvoice %}
+    {% for tax in subscription.initialInvoice.taxes %}
+    <tr class="amount">
+        <td colspan="4" class="text-right" style="padding: 8px; text-align: right;">Tax ({{tax.description}}):</td>
+        <td class="text-right" style="padding: 8px; text-align: right;"><span>{{subscription.plan.currencySign}}{{tax.amount | money}}</span></td>
+    </tr>
+    {% endfor %}
+    {% for discount in subscription.initialInvoice.discounts %}
+    <tr class="amount">
+        <td colspan="4" class="text-right" style="padding: 8px; text-align: right;">Discount ({{discount.description}}):</td>
+        <td class="text-right" style="padding: 8px; text-align: right;"><span>{{subscription.plan.currencySign}}{{discount.amount | money}}</span></td>
+    </tr>
+    {% endfor %}
+    <tr class="amount">
+        <td colspan="4" class="text-right" style="padding: 8px; text-align: right;">Amount:</td>
+        <td class="text-right" style="padding: 8px; text-align: right;"><span>{{subscription.plan.currencySign}}{{subscription.initialInvoice.amount | money}}</span></td>
+    </tr>
+    {% endif %}
+</table>
+{% if subscription.plan.trialPeriodLength %}<p>Your trial period starts {{ subscription.createdTime | date: "%m/%d/%Y" }} and will end in {{subscription.plan.trialPeriodLength}} {{subscription.plan.trialPeriodUnit}}.</p>{% endif %}
+{% if subscription.plan.recurringPeriodLength %}<p>{% if subscription.plan.trialPeriodLength %}Once the trial period ends. {% endif %}You will be billed every {{subscription.plan.recurringPeriodLength}} {{subscription.plan.recurringPeriodUnit}}.</p>{% endif %}
+</body>
+</html>

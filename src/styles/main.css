@@ -1,0 +1,45 @@
+html, body{
+    height: 100%;
+    display: block;
+}
+body {
+    font-family: Roboto, sans-serif;
+    font-size: 14px;
+    color: #0D2B3E;
+    margin: 0;
+    padding: 20px;
+}
+.table{
+    width: 100%;
+    padding: 16px 0;
+}
+.billing-address {
+    vertical-align: top;
+}
+.billing-invoice {
+    vertical-align: top;
+}
+.title {
+    font-weight: 600;
+}
+.items {
+    border-bottom: 1px solid #E1E7EA;
+}
+.items td {
+    padding: 8px;
+}
+.items .item:nth-child(even){
+    background-color: #F6F8F9;
+}
+.header > td{
+    border-bottom: 1px solid #E1E7EA;
+}
+.quantity{
+    text-align: center;
+}
+.text-right{
+    text-align: right;
+}
+.total-line {
+    border-bottom: 1px solid #E1E7EA;
+}

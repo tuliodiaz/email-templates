@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" style="display: block; height: 100%;">
+<head>
+    <title>Your subscription was canceled</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    
+</head>
+<body style="color: #0D2B3E; display: block; font-family: Roboto, sans-serif; font-size: 14px; height: 100%; margin: 0; padding: 20px;">
+<p>Your subscription to {{ subscription.plan.name }} was canceled on {{ subscription.canceledTime | date: "%m/%d/%Y" }}.</p>
+<p>There will be no further renewals or charges. If you wish to reinstate your subscription, please visit <a href="{{ subscription.website.url }}">{{ subscription.website.url }}</a></p>
+</body>
+</html>

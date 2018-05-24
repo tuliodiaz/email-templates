@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Your subscription was activated</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<h3>Thank you for subscribing to {{ subscription.website.url }}!</h3>
+<p>This email is to confirm your recent subscription.</p>
+<p>Date {{ subscription.createdTime | date: "%m/%d/%Y" }}</p>
+<table class="table" cellspacing="0">
+    <tr class="billing-content">
+        <td colspan="3" class="billing-address">
+            <span class="title">Billed to:</span> <br/>
+            <span>{{subscription.billingAddress.firstName}} {{subscription.billingAddress.lastName}}</span> <br/>
+            {% if subscription.billingAddress.organization %}
+            <span>{{subscription.billingAddress.organization}}</span> <br/>
+            {% endif %}
+            <span>
+                {{subscription.billingAddress.address}}
+                {% if subscription.billingAddress.address2 %}
+                    ({{subscription.billingAddress.address2}})
+                {% endif %}
+            </span> <br/>
+            <span>{{subscription.billingAddress.city}}, {{subscription.billingAddress.region}}  {{subscription.billingAddress.postalCode}}</span> <br/>
+            <span>{{subscription.billingAddress.country}}</span>
+        </td>
+        {% if subscription.initialInvoice %}
+        <td colspan="2" class="billing-invoice">
+            <span class="title">Invoice: #{{subscription.initialInvoice.invoiceNumber}}</span> <br/>
+            <span class="title">Payment Date: </span><span>{{subscription.initialInvoice.paidTime | date: "%m/%d/%Y" }}</span> <br/>
+            <span class="title">Payment Method: </span><span>{{subscription.customer.defaultPaymentInstrument.method}}</span> <br/>
+        </td>
+        {% endif %}
+    </tr>
+</table>
+<p>You have been subscribed to {{subscription.plan.name}} - {{subscription.plan.description}}.</p>
+<table class="table items" cellspacing="0">
+    <tr class="header">
+        <td class="quantity"><span class="title">Qty.</span></td>
+        <td colspan="3"><span class="title">Service</span></td>
+        <td class="text-right"><span class="title">Price ({{subscription.plan.currency}})</span></td>
+    </tr>
+    {% if subscription.plan.setupAmount %}
+    <tr class="item">
+        <td class="quantity"><span>{{subscription.quantity}}</span></td>
+        <td colspan="3"><span>Setup fee</span></td>
+        <td class="text-right"><span>{{subscription.plan.currencySign}}{{subscription.plan.setupAmount | money}}</span></td>
+    </tr>
+    {% endif %}
+    {% if subscription.plan.trialPeriodLength %}
+    <tr class="item">
+        <td class="quantity"><span>{{subscription.quantity}}</span></td>
+        <td colspan="3"><span>Trial period - {{subscription.plan.trialPeriodLength}} {{subscription.plan.trialPeriodUnit}}</span></td>
+        <td class="text-right total-line"><span>{{subscription.plan.currencySign}}{{subscription.plan.trialAmount | money}}</span></td>
+    </tr>
+    {% elsif subscription.plan.recurringPeriodLength %}
+    <tr class="item">
+        <td class="quantity"><span>{{subscription.quantity}}</span></td>
+        <td colspan="3"><span>Recurring every {{subscription.plan.recurringPeriodLength}} {{subscription.plan.recurringPeriodUnit}}</span></td>
+        <td class="text-right total-line"><span>{{subscription.plan.currencySign}}{{subscription.plan.recurringAmount | money}}</span></td>
+    </tr>
+    {% endif %}
+    {% if subscription.initialInvoice %}
+    {% for tax in subscription.initialInvoice.taxes %}
+    <tr class="amount">
+        <td colspan="4" class="text-right">Tax ({{tax.description}}):</td>
+        <td class="text-right"><span>{{subscription.plan.currencySign}}{{tax.amount | money}}</span></td>
+    </tr>
+    {% endfor %}
+    {% for discount in subscription.initialInvoice.discounts %}
+    <tr class="amount">
+        <td colspan="4" class="text-right">Discount ({{discount.description}}):</td>
+        <td class="text-right"><span>{{subscription.plan.currencySign}}{{discount.amount | money}}</span></td>
+    </tr>
+    {% endfor %}
+    <tr class="amount">
+        <td colspan="4" class="text-right">Amount:</td>
+        <td class="text-right"><span>{{subscription.plan.currencySign}}{{subscription.initialInvoice.amount | money}}</span></td>
+    </tr>
+    {% endif %}
+</table>
+{% if subscription.plan.trialPeriodLength %}<p>Your trial period starts {{ subscription.createdTime | date: "%m/%d/%Y" }} and will end in {{subscription.plan.trialPeriodLength}} {{subscription.plan.trialPeriodUnit}}.</p>{% endif %}
+{% if subscription.plan.recurringPeriodLength %}<p>{% if subscription.plan.trialPeriodLength %}Once the trial period ends. {% endif %}You will be billed every {{subscription.plan.recurringPeriodLength}} {{subscription.plan.recurringPeriodUnit}}.</p>{% endif %}
+</body>
+</html>
