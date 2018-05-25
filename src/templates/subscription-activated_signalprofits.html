@@ -51,30 +51,30 @@
         {% endif %}
     </tr>
 </table>
-<p>You have been subscribed to {{subscription.plan.name}} - {{subscription.plan.description}}.</p>
+{% capture plan_name_description %}{{subscription.plan.name}} - {{subscription.plan.description}}{% endcapture %}
 <table class="table items" cellspacing="0">
     <tr class="header">
         <td class="quantity"><span class="title">Qty.</span></td>
         <td colspan="3"><span class="title">Service</span></td>
-        <td class="text-right"><span class="title">Price ({{subscription.plan.currency}})</span></td>
+        <td class="text-right"><span class="title">Unit Price ({{subscription.plan.currency}})</span></td>
     </tr>
     {% if subscription.plan.setupAmount %}
     <tr class="item">
         <td class="quantity"><span>{{subscription.quantity}}</span></td>
-        <td colspan="3"><span>Setup fee</span></td>
+        <td colspan="3"><span>Setup fee - {{plan_name_description}}</span></td>
         <td class="text-right"><span>{{subscription.plan.currencySign}}{{subscription.plan.setupAmount | money}}</span></td>
     </tr>
     {% endif %}
     {% if subscription.plan.trialPeriodLength %}
     <tr class="item">
         <td class="quantity"><span>{{subscription.quantity}}</span></td>
-        <td colspan="3"><span>Trial period - {{subscription.plan.trialPeriodLength}} {{subscription.plan.trialPeriodUnit}}</span></td>
+        <td colspan="3"><span>Trial period - {{plan_name_description}}</span></td>
         <td class="text-right total-line"><span>{{subscription.plan.currencySign}}{{subscription.plan.trialAmount | money}}</span></td>
     </tr>
     {% elsif subscription.plan.recurringPeriodLength %}
     <tr class="item">
         <td class="quantity"><span>{{subscription.quantity}}</span></td>
-        <td colspan="3"><span>Recurring every {{subscription.plan.recurringPeriodLength}} {{subscription.plan.recurringPeriodUnit}}</span></td>
+        <td colspan="3"><span>Recurring every {{subscription.plan.recurringPeriodLength}} {{subscription.plan.recurringPeriodUnit}} - {{plan_name_description}}</span></td>
         <td class="text-right total-line"><span>{{subscription.plan.currencySign}}{{subscription.plan.recurringAmount | money}}</span></td>
     </tr>
     {% endif %}
@@ -97,7 +97,7 @@
     </tr>
     {% endif %}
 </table>
-{% if subscription.plan.trialPeriodLength %}<p>Your trial period starts {{ subscription.createdTime | date: "%m/%d/%Y" }} and will end in {{subscription.plan.trialPeriodLength}} {{subscription.plan.trialPeriodUnit}}.</p>{% endif %}
-{% if subscription.plan.recurringPeriodLength %}<p>{% if subscription.plan.trialPeriodLength %}Once the trial period ends. {% endif %}You will be billed every {{subscription.plan.recurringPeriodLength}} {{subscription.plan.recurringPeriodUnit}}.</p>{% endif %}
+{% if subscription.plan.trialPeriodLength %}<p>Your trial period starts {{ subscription.createdTime | date: "%m/%d/%Y" }} and will end in {{subscription.plan.trialPeriodLength}} {{subscription.plan.trialPeriodUnit}}{% if subscription.renewalTime %}, on {{subscription.renewalTime | date: "%m/%d/%Y"}}{% endif %}.</p>{% endif %}
+{% if subscription.plan.recurringPeriodLength %}<p>{% if subscription.plan.trialPeriodLength %}Once the trial period ends, {% endif %}You will be billed every {{subscription.plan.recurringPeriodLength}} {{subscription.plan.recurringPeriodUnit}}.</p>{% endif %}
 </body>
 </html>
